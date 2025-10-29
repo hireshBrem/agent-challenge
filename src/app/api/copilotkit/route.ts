@@ -19,6 +19,8 @@ export const POST = async (req: NextRequest) => {
     agents: MastraAgent.getLocalAgents({ mastra }),
   });
 
+  
+
   const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
     runtime,
     serviceAdapter,
