@@ -10,7 +10,7 @@ import { OpenAIRealtimeVoice } from "@mastra/voice-openai-realtime";
 import { OpenAIVoice } from "@mastra/voice-openai";
 
 export const AgentState = z.object({
-  proverbs: z.array(z.string()).default([]),
+    proverbs: z.array(z.string()).default([])
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -73,7 +73,7 @@ const createRealtimeVoice = () =>
   new OpenAIRealtimeVoice({
     model: process.env.OPENAI_REALTIME_MODEL || "gpt-4o-mini-realtime-preview-2024-12-17",
     speaker: process.env.OPENAI_REALTIME_SPEAKER || "alloy",
-  });
+});
 
 export const createRealtimeVoiceAgent = () =>
   new Agent({
@@ -82,6 +82,6 @@ export const createRealtimeVoiceAgent = () =>
     instructions: realtimeVoiceInstructions,
     model: openai("gpt-4o-mini"),
     voice: createRealtimeVoice(),
-  });
+});
 
 export const realtimeVoiceAgent = createRealtimeVoiceAgent();
