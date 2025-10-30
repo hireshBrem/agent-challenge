@@ -6,13 +6,14 @@ import { weatherTool } from "@/mastra/tools";
 import { LibSQLStore } from "@mastra/libsql";
 import { z } from "zod";
 import { Memory } from "@mastra/memory";
-import { GeminiLiveVoice } from "@mastra/voice-google-gemini-live";
-import { playAudio, getMicrophoneStream } from "@mastra/node-audio";
+import { OpenAIRealtimeVoice } from "@mastra/voice-openai-realtime";
+import { OpenAIVoice } from "@mastra/voice-openai";
 
 export const AgentState = z.object({
   proverbs: z.array(z.string()).default([]),
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ollama = createOllama({
   baseURL: process.env.NOS_OLLAMA_API_URL || process.env.OLLAMA_API_URL,
 })
@@ -36,8 +37,6 @@ export const weatherAgent = new Agent({
 })
 
 
-
-import { OpenAIVoice } from '@mastra/voice-openai';
 
 const instructions = `
 You are an AI note assistant tasked with providing concise, structured summaries of their content
@@ -67,3 +66,22 @@ export const noteTakerAgent = new Agent({
   model: openai('gpt-4o'),
   voice: new OpenAIVoice(),
 });
+
+const realtimeVoiceInstructions = `You are a friendly real-time AI assistant. Keep responses concise and conversational.`;
+
+const createRealtimeVoice = () =>
+  new OpenAIRealtimeVoice({
+    model: process.env.OPENAI_REALTIME_MODEL || "gpt-4o-mini-realtime-preview-2024-12-17",
+    speaker: process.env.OPENAI_REALTIME_SPEAKER || "alloy",
+  });
+
+export const createRealtimeVoiceAgent = () =>
+  new Agent({
+    name: "Realtime Voice Agent",
+    description: "Bidirectional speech assistant powered by OpenAI Realtime.",
+    instructions: realtimeVoiceInstructions,
+    model: openai("gpt-4o-mini"),
+    voice: createRealtimeVoice(),
+  });
+
+export const realtimeVoiceAgent = createRealtimeVoiceAgent();

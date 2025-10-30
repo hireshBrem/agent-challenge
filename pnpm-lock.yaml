@@ -53,6 +53,9 @@ importers:
       '@mastra/voice-openai':
         specifier: ^0.11.11
         version: 0.11.11(@mastra/core@0.19.1(openapi-types@12.1.3)(react@19.2.0)(zod@3.25.76))(ws@8.18.3)(zod@3.25.76)
+      '@mastra/voice-openai-realtime':
+        specifier: ^0.11.11
+        version: 0.11.11(@mastra/core@0.19.1(openapi-types@12.1.3)(react@19.2.0)(zod@3.25.76))(zod@3.25.76)
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
@@ -1743,6 +1746,12 @@ packages:
     peerDependencies:
       '@mastra/core': '>=0.18.1-0 <0.24.0-0'
       zod: ^3.0.0
+
+  '@mastra/voice-openai-realtime@0.11.11':
+    resolution: {integrity: sha512-4L3CA0mMJyr+3EMmip86681f6mOPy2BOhIErEGX2i5FpolOu4gz03mvAZDPannM4V6B41ZYk3D6YyV7NUHRtWw==}
+    peerDependencies:
+      '@mastra/core': '>=0.18.1-0 <0.24.0-0'
+      zod: ^3.25.0 || ^4.0.0
 
   '@mastra/voice-openai@0.11.11':
     resolution: {integrity: sha512-hzbAuEHRsFbOqR8BQkvqK3cpRlXYYQppLQvTcL8zZ9/QDj5oUtUgLCkEBxTxqQOnSNylmhxqNdee/1NCFUINXA==}
@@ -5969,6 +5978,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@5.1.6:
+    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
   napi-postinstall@0.3.4:
     resolution: {integrity: sha512-PHI5f1O0EP5xJ9gQmFGMS6IZcrVvTjpXjz7Na41gTE7eE2hK11lg04CECCYEEjdc17EV4DO+fkGEtt7TpTaTiQ==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
@@ -6098,6 +6112,10 @@ packages:
 
   open@10.2.0:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
+    engines: {node: '>=18'}
+
+  openai-realtime-api@1.0.8:
+    resolution: {integrity: sha512-/PC/RY8/9E03IB8w61D0Grwg9fh7fcehH63BDA3Mv2hQUjPtGvx5+9CFQ9s105oSk6ag1hAzDlUBAS4uwrCu1A==}
     engines: {node: '>=18'}
 
   openai@4.104.0:
@@ -9596,6 +9614,17 @@ snapshots:
       - '@modelcontextprotocol/sdk'
       - bufferutil
       - supports-color
+      - utf-8-validate
+
+  '@mastra/voice-openai-realtime@0.11.11(@mastra/core@0.19.1(openapi-types@12.1.3)(react@19.2.0)(zod@3.25.76))(zod@3.25.76)':
+    dependencies:
+      '@mastra/core': 0.19.1(openapi-types@12.1.3)(react@19.2.0)(zod@3.25.76)
+      openai-realtime-api: 1.0.8
+      ws: 8.18.3
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.6(zod@3.25.76)
+    transitivePeerDependencies:
+      - bufferutil
       - utf-8-validate
 
   '@mastra/voice-openai@0.11.11(@mastra/core@0.19.1(openapi-types@12.1.3)(react@19.2.0)(zod@3.25.76))(ws@8.18.3)(zod@3.25.76)':
@@ -14663,6 +14692,8 @@ snapshots:
 
   nanoid@3.3.11: {}
 
+  nanoid@5.1.6: {}
+
   napi-postinstall@0.3.4: {}
 
   natural-compare@1.4.0: {}
@@ -14802,6 +14833,14 @@ snapshots:
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
+
+  openai-realtime-api@1.0.8:
+    dependencies:
+      nanoid: 5.1.6
+      ws: 8.18.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   openai@4.104.0(ws@8.18.3)(zod@3.25.76):
     dependencies:
