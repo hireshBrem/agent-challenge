@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     const agent = mastra.getAgent("realtimeVoiceAgent");
-    console.log("agent: ", agent);
+    // console.log("agent: ", agent);
     
     // Connect to the voice service
     await agent.voice.connect();
