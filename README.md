@@ -303,7 +303,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Submission Links:**
 - 📱 [Social Media Post on Bluesky](https://bsky.app/profile/bremzy05.bsky.social/post/3m4jeus5le22f)
-- 🎥 **Demo Video**: [Coming Soon - Add your demo video link here]
+- 🎥 **Demo Video**: [demo video](https://screen.studio/share/iGEltmg9)
 - 🎥  **Deployment screenshot**: ![Successful Nosana Deployment](assets/deployment.png)
 
 
