@@ -33,19 +33,6 @@ export async function POST(request: NextRequest) {
     // Get the GitHub chat agent
     const agent = mastra.getAgent('githubChatAgent');
 
-    // const userMcpClient = new MCPClient({
-    //     servers: {
-    //       github: {
-    //         url: new URL('https://api.githubcopilot.com/mcp/'),
-    //         requestInit: {
-    //           headers: {
-    //             'Authorization': `Bearer YOUR_TOKEN_HERE`
-    //           }
-    //         }
-    //       }
-    //     }
-    // });
-    
     if (!agent) {
       return NextResponse.json(
         { error: 'Agent not found' },
@@ -54,9 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate response using the agent
-    const response = await agent.generateVNext(contextMessage, 
-        // { toolsets: await userMcpClient.getTools() }
-    );
+    const response = await agent.generateVNext(contextMessage);
 
     return NextResponse.json({
       message: response.text,
