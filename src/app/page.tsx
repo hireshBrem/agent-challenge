@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Orb } from '@/components/ui/orb';
 import { ShimmeringText } from '@/components/ui/shimmering-text';
+import { LogoutButton } from '@/components/LogoutButton';
 
 interface FileTreeItem {
   name: string;
@@ -307,7 +308,7 @@ export default function Home() {
     <div className="flex flex-col h-screen w-full bg-black text-white font-mono">
       {/* Header with Search */}
       <header className="w-full border-b border-gray-800 px-4 py-3 relative">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -327,9 +328,12 @@ export default function Home() {
             )}
           </div>
           {user && (
-            <div className="flex items-center gap-2 text-sm">
-              <img src={user.avatar_url} alt={user.login} className="w-6 h-6 rounded-full" />
-              <span>{user.login}</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 text-sm">
+                <img src={user.avatar_url} alt={user.login} className="w-6 h-6 rounded-full" />
+                <span>{user.login}</span>
+              </div>
+              <LogoutButton />
             </div>
           )}
         </div>
