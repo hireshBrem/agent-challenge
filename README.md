@@ -1,307 +1,443 @@
-# Builders' Challenge #3: AI Agents 102
-**Presented by Nosana and Mastra**
+# Repo-Agent: AI GitHub Repository Assistant 🤖
 
 ![Agent](./assets/NosanaBuildersChallenge03.jpg)
 
-## Welcome to the AI Agent Challenge
+An intelligent AI agent that helps you explore, understand, and navigate your GitHub repositories through natural conversation. Built with [Mastra](https://mastra.ai) and deployed on the [Nosana](https://nosana.io) decentralized compute network.
 
-Build and deploy intelligent AI agents using the **Mastra framework** on the **Nosana decentralized compute network**. Whether you're a beginner or an experienced developer, this challenge has something for everyone!
+## 📖 Agent Description & Purpose
 
-## 🎯 Challenge Overview
+**Repo-Agent** is an AI-powered GitHub assistant that makes it easy to interact with your repositories using natural language. Instead of manually browsing through files and folders, simply ask questions about your codebase and get instant, context-aware answers.
 
-**Your Mission:** Build an intelligent AI agent with a frontend interface and deploy it on Nosana's decentralized network.
+### Key Features
 
-### What You'll Build
+- 🔍 **Intelligent Repository Search** - Search and filter through all your GitHub repositories
+- 📂 **Interactive File Browser** - Navigate your repository structure with an intuitive tree view
+- 💬 **AI Chat Interface** - Ask questions about your code, files, and repository structure
+- 🔐 **Secure GitHub OAuth** - Safe authentication with your GitHub account
+- 📝 **File Content Viewer** - Read file contents with syntax highlighting
+- 🎯 **Context-Aware Responses** - The agent understands your current repository and file context
 
-Create an AI agent that performs real-world tasks using:
-- **Mastra framework** for agent orchestration
-- **Tool calling** to interact with external services
-- **MCP (Model Context Protocol)** for enhanced capabilities
-- **Custom frontend** to showcase your agent's functionality
+### Use Cases
 
-### Agent Ideas & Examples
+- Understand unfamiliar codebases quickly
+- Get explanations of specific files or code sections
+- Find dependencies and configuration files
+- Analyze repository structure and organization
+- Get coding best practices and improvement suggestions
 
-The possibilities are endless! Here are some ideas to get you started:
+## 🛠️ Tools & APIs Used
 
-- 🤖 **Personal Assistant** - Schedule management, email drafting, task automation
-- 📊 **Data Analyst Agent** - Fetch financial data, generate insights, create visualizations
-- 🌐 **Web Researcher** - Aggregate information from multiple sources, summarize findings
-- 🛠️ **DevOps Helper** - Monitor services, automate deployments, manage infrastructure
-- 🎨 **Content Creator** - Generate social media posts, blog outlines, marketing copy
-- 🔍 **Smart Search** - Multi-source search with AI-powered result synthesis
-- 💬 **Customer Support Bot** - Answer FAQs, ticket routing, knowledge base queries
+### Core Technologies
 
-**Be Creative!** The best agents solve real problems in innovative ways.
+- **[Mastra](https://mastra.ai)** - AI agent orchestration and tool management
+- **[OpenAI GPT-4](https://openai.com)** - Large language model for intelligent responses
+- **[Next.js 15](https://nextjs.org)** - React framework for the frontend
+- **[GitHub API](https://docs.github.com/en/rest)** - Access to repositories and file contents
+- **[GitHub OAuth](https://docs.github.com/en/apps/oauth-apps)** - Secure user authentication
 
-## Getting Started Template
+### Custom Mastra Tools
 
-This is a starter template for building AI agents using [Mastra](https://mastra.ai) and [CopilotKit](https://copilotkit.ai). It provides a modern Next.js application with integrated AI capabilities and a beautiful UI.
+The agent uses three custom-built tools:
 
-## Getting Started
+1. **getUserRepositories** - Fetches authenticated user's GitHub repositories with search filtering
+2. **getRepositoryContents** - Retrieves directory contents and file structure
+3. **getFileContent** - Reads raw file contents from repositories
 
-### Prerequisites & Registration
+### Additional Features
 
-To participate in the challenge and get Nosana credits/NOS tokens, complete these steps:
+- **OpenAI Realtime API** - Voice interaction capabilities (experimental)
+- **Tailwind CSS** - Modern, responsive UI design
+- **React Three Fiber** - 3D visualizations
 
-1. Register at [SuperTeam](https://earn.superteam.fun/listing/nosana-builders-challenge-agents-102)
-2. Register at the [Luma Page](https://luma.com/zkob1iae)
-3. Star these repos:
-   - [this repo](https://github.com/nosana-ci/agent-challenge)
-   - [Nosana CLI](https://github.com/nosana-ci/nosana-cli)
-   - [Nosana SDK](https://github.com/nosana-ci/nosana-sdk)
-4. Complete [this registration form](https://e86f0b9c.sibforms.com/serve/MUIFALaEjtsXB60SDmm1_DHdt9TOSRCFHOZUSvwK0ANbZDeJH-sBZry2_0YTNi1OjPt_ZNiwr4gGC1DPTji2zdKGJos1QEyVGBzTq_oLalKkeHx3tq2tQtzghyIhYoF4_sFmej1YL1WtnFQyH0y1epowKmDFpDz_EdGKH2cYKTleuTu97viowkIIMqoDgMqTD0uBaZNGwjjsM07T)
+## 🚀 Setup Instructions
 
-### Setup Your Development Environment
+### Prerequisites
 
-#### **Step 1: Fork, Clone and Quickstart**
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (v18 or higher)
+- **pnpm** (v8 or higher) - `npm install -g pnpm`
+- **GitHub Account** - For OAuth authentication
+- **OpenAI API Key** - Get one from [OpenAI Platform](https://platform.openai.com)
+
+### Step 1: Clone the Repository
 
 ```bash
-# Fork this repo on GitHub, then clone your fork
-git clone https://github.com/YOUR-USERNAME/agent-challenge
+git clone https://github.com/YOUR-USERNAME/repo-agent
+cd repo-agent
+```
 
-cd agent-challenge
+### Step 2: Install Dependencies
 
+```bash
+pnpm install
+```
+
+### Step 3: Configure Environment Variables
+
+Copy the example environment file and update with your credentials:
+
+```bash
 cp .env.example .env
-
-pnpm i
-
-pnpm run dev:ui      # Start UI server (port 3000)
-pnpm run dev:agent   # Start Mastra agent server (port 4111)
 ```
 
-Open <http://localhost:3000> to see your agent in action in the frontend.
-Open <http://localhost:4111> to open up the Mastra Agent Playground.
+See the [Environment Variables](#-environment-variables-required) section below for details on each variable.
 
-#### **Step 2: Choose Your LLM for Development (Optional)**
+### Step 4: Set Up GitHub OAuth Application
 
-Pick one option below to power your agent during development:
+1. Go to [GitHub Settings > Developer Settings > OAuth Apps](https://github.com/settings/developers)
+2. Click "New OAuth App"
+3. Fill in the details:
+   - **Application name**: Repo-Agent (or your preferred name)
+   - **Homepage URL**: `http://localhost:3000`
+   - **Authorization callback URL**: `http://localhost:3000/api/auth/github/callback`
+4. Click "Register application"
+5. Copy the **Client ID** and generate a **Client Secret**
+6. Add these to your `.env` file
 
-##### Option A: Use Shared Nosana LLM Endpoint (Recommended - No Setup!)
+### Step 5: Start the Application
 
-We provide a free LLM endpoint hosted on Nosana for development. Edit your `.env`:
-
-```env
-# Qwen3:8b - Nosana Endpoint
-# Note baseURL for Ollama needs to be appended with `/api`
-OLLAMA_API_URL=https://3yt39qx97wc9hqwwmylrphi4jsxrngjzxnjakkybnxbw.node.k8s.prd.nos.ci/api
-MODEL_NAME_AT_ENDPOINT=qwen3:8b
-```
-
-If it goes down, reach out on [Discord](https://discord.com/channels/236263424676331521/1354391113028337664)
-
-##### Option B: Use Local LLM
-
-Run Ollama locally (requires [Ollama installed](https://ollama.com/download)):
+Run both the Mastra agent server and Next.js UI:
 
 ```bash
-ollama pull qwen3:0.6b
-ollama serve
+# Terminal 1 - Start Mastra Agent Server (port 4111)
+pnpm run dev:agent
+
+# Terminal 2 - Start Next.js UI (port 3000)
+pnpm run dev:ui
 ```
 
-Edit your `.env`:
-```env
-OLLAMA_API_URL=http://127.0.0.1:11434/api
-MODEL_NAME_AT_ENDPOINT=qwen3:0.6b
-```
-
-##### Option C: Use OpenAI
-
-Add to your `.env` and uncomment the OpenAI line in `src/mastra/agents/index.ts`:
-
-```env
-OPENAI_API_KEY=your-key-here
-```
-
-## 🏗️ Implementation Timeline
-
-**Important Dates:**
-- Start Challenge: 10 October
-- Submission Deadline: 31 October
-- Winners Announced: 07 November
-
-### Phase 1: Development
-
-1. **Setup** : Fork repo, install dependencies, choose template
-2. **Build** : Implement your tool functions and agent logic
-3. **Test** : Validate functionality at http://localhost:3000
-
-### Phase 2: Containerization
-
-1. **Clean up**: Remove unused agents from `src/mastra/index.ts`
-2. **Build**: Create Docker container using the provided `Dockerfile`
-3. **Test locally**: Verify container works correctly
+Or run both simultaneously:
 
 ```bash
-# Build your container (using the provided Dockerfile)
-docker build -t yourusername/agent-challenge:latest .
+pnpm run dev
+```
 
-# Test locally first
-docker run -p 3000:3000 yourusername/agent-challenge:latest 
+### Step 6: Access the Application
+
+- **Frontend UI**: Open [http://localhost:3000](http://localhost:3000)
+- **Mastra Playground**: Open [http://localhost:4111](http://localhost:4111)
+
+## 🔑 Environment Variables Required
+
+Create a `.env` file in the root directory with the following variables:
+
+### Required Variables
+
+```env
+# OpenAI Configuration (Required for AI chat)
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# GitHub OAuth (Required for authentication)
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+GITHUB_REDIRECT_URI=http://localhost:3000/api/auth/github/callback
+
+# Logging
+LOG_LEVEL=info
+```
+
+### Optional Variables (Alternative LLM Options)
+
+```env
+# Option 1: Use Nosana's Free LLM Endpoint (for development)
+# OLLAMA_API_URL=https://3yt39qx97wc9hqwwmylrphi4jsxrngjzxnjakkybnxbw.node.k8s.prd.nos.ci/api
+# MODEL_NAME_AT_ENDPOINT=qwen3:8b
+
+# Option 2: Use Local Ollama Instance
+# OLLAMA_API_URL=http://127.0.0.1:11434/api
+# MODEL_NAME_AT_ENDPOINT=qwen3:0.6b
+```
+
+### Variable Descriptions
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `OPENAI_API_KEY` | OpenAI API key for GPT-4 | `sk-proj-...` |
+| `GITHUB_CLIENT_ID` | GitHub OAuth App Client ID | `Iv1.a1b2c3d4e5f6g7h8` |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth App Client Secret | `a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0` |
+| `GITHUB_REDIRECT_URI` | OAuth callback URL | `http://localhost:3000/api/auth/github/callback` |
+| `LOG_LEVEL` | Application logging level | `info`, `debug`, `error` |
+
+## 💡 Example Usage & Screenshots
+
+### Getting Started
+
+1. **Login with GitHub**
+   - Click the "Login with GitHub" button in the top right
+   - Authorize the application to access your repositories
+
+2. **Search for a Repository**
+   - Type the name of any of your repositories in the search bar
+   - Select a repository from the dropdown results
+
+3. **Explore the Repository**
+   - Browse files and folders in the left sidebar
+   - Click on files to view their contents in the middle panel
+   - The file tree loads dynamically as you expand folders
+
+4. **Chat with the AI Assistant**
+   - Use the chat panel on the right to ask questions about your repository
+   - The AI assistant has access to your repository structure and file contents
+
+### Example Questions to Ask
+
+```
+"What does this repository do?"
+"Explain the main dependencies in package.json"
+"What files are in the src directory?"
+"How is authentication implemented?"
+"What's the purpose of the [filename] file?"
+"What technologies are used in this project?"
+"Suggest improvements for this codebase"
+```
+
+### Screenshots
+
+#### Main Interface
+The application features a three-panel layout:
+- **Left**: Repository file tree browser
+- **Middle**: File content viewer with syntax highlighting
+- **Right**: AI chat assistant
+
+#### Features in Action
+- **Repository Search**: Search across all your GitHub repositories
+- **File Navigation**: Click through folders and files in the tree view
+- **AI Assistant**: Get intelligent answers about your codebase
+- **Multiple File Tabs**: Open and switch between multiple files
+- **Code Copying**: Copy file contents with one click
+
+### Sample Workflow
+
+```bash
+# 1. User logs in with GitHub
+# 2. Searches for "my-project"
+# 3. Clicks on the repository
+# 4. Browses to src/components/Button.tsx
+# 5. Asks: "What props does this Button component accept?"
+# 6. AI responds with detailed explanation of the component's interface
+```
+
+## 🐳 Docker Deployment
+
+### Build Docker Container
+
+```bash
+# Build the container
+docker build -t YOUR-USERNAME/repo-agent:latest .
+
+# Test locally
+docker run -p 3000:3000 \
+  -e OPENAI_API_KEY=your-key \
+  -e GITHUB_CLIENT_ID=your-id \
+  -e GITHUB_CLIENT_SECRET=your-secret \
+  -e GITHUB_REDIRECT_URI=http://localhost:3000/api/auth/github/callback \
+  YOUR-USERNAME/repo-agent:latest
 
 # Push to Docker Hub
 docker login
-docker push yourusername/agent-challenge:latest
+docker push YOUR-USERNAME/repo-agent:latest
 ```
-
-### Phase 3: Deployment to Nosana
-1. **Deploy your complete stack**: The provided `Dockerfile` will deploy:
-   - Your Mastra agent
-   - Your frontend interface
-   - An LLM to power your agent (all in one container!)
-2. **Verify**: Test your deployed agent on Nosana network
-3. **Capture proof**: Screenshot or get deployment URL for submission
-
-### Phase 4: Video Demo
-
-Record a 1-3 minute video demonstrating:
-- Your agent **running on Nosana** (show the deployed version!)
-- Key features and functionality
-- The frontend interface in action
-- Real-world use case demonstration
-- Upload to YouTube, Loom, or similar platform
-
-### Phase 5: Documentation
-
-Update this README with:
-- Agent description and purpose
-- What tools/APIs your agent uses
-- Setup instructions
-- Environment variables required
-- Example usage and screenshots
-
-## ✅ Minimum Requirements
-
-Your submission **must** include:
-
-- [ ] **Agent with Tool Calling** - At least one custom tool/function
-- [ ] **Frontend Interface** - Working UI to interact with your agent
-- [ ] **Deployed on Nosana** - Complete stack running on Nosana network
-- [ ] **Docker Container** - Published to Docker Hub
-- [ ] **Video Demo** - 1-3 minute demonstration
-- [ ] **Updated README** - Clear documentation in your forked repo
-- [ ] **Social Media Post** - Share on X/BlueSky/LinkedIn with #NosanaAgentChallenge
-
-## Submission Process
-
-1. **Complete all requirements** listed above
-2. **Commit all of your changes to the `main` branch of your forked repository**
-   - All your code changes
-   - Updated README
-   - Link to your Docker container
-   - Link to your video demo
-   - Nosana deployment proof
-3. **Social Media Post** (Required): Share your submission on X (Twitter), BlueSky, or LinkedIn
-   - Tag @nosana_ai
-   - Include a brief description of your agent
-   - Add hashtag #NosanaAgentChallenge
-4. **Finalize your submission on the [SuperTeam page](https://earn.superteam.fun/listing/nosana-builders-challenge-agents-102)**
-   - Add your forked GitHub repository link
-   - Add a link to your social media post
-   - Submissions that do not meet all requirements will not be considered
 
 ## 🚀 Deploying to Nosana
 
+Deploy your Repo-Agent on the Nosana decentralized compute network!
 
 ### Using Nosana Dashboard
+
 1. Open [Nosana Dashboard](https://dashboard.nosana.com/deploy)
 2. Click `Expand` to open the job definition editor
-3. Edit `nos_job_def/nosana_mastra.json` with your Docker image:
+3. Edit `nos_job_def/nosana_mastra_job_definition.json` with your Docker image:
    ```json
    {
-     "image": "yourusername/agent-challenge:latest"
+     "image": "YOUR-USERNAME/repo-agent:latest"
    }
    ```
 4. Copy and paste the edited job definition
-5. Select a GPU
+5. Select a GPU (recommended: nvidia-3090 or higher)
 6. Click `Deploy`
+7. Wait for deployment to complete and get your public URL
 
 ### Using Nosana CLI (Alternative)
+
 ```bash
+# Install Nosana CLI
 npm install -g @nosana/cli
-nosana job post --file ./nos_job_def/nosana_mastra.json --market nvidia-3090 --timeout 30
+
+# Deploy your agent
+nosana job post --file ./nos_job_def/nosana_mastra_job_definition.json --market nvidia-3090 --timeout 30
 ```
 
-## 🏆 Judging Criteria
+### Important Notes for Deployment
 
-Submissions evaluated on 4 key areas (25% each):
+- Ensure all environment variables are properly set in your deployment
+- Update `GITHUB_REDIRECT_URI` to match your Nosana deployment URL
+- The deployed version includes the LLM model in the container for self-contained operation
 
-### 1. Innovation 🎨
-- Originality of agent concept
-- Creative use of AI capabilities
-- Unique problem-solving approach
+## 🎯 Project Architecture
 
-### 2. Technical Implementation 💻
-- Code quality and organization
-- Proper use of Mastra framework
-- Efficient tool implementation
-- Error handling and robustness
+```
+repo-agent/
+├── src/
+│   ├── app/                    # Next.js pages and API routes
+│   │   ├── api/
+│   │   │   ├── agent/         # AI agent chat endpoint
+│   │   │   ├── auth/          # GitHub OAuth endpoints
+│   │   │   ├── repos/         # Repository search
+│   │   │   ├── repo-contents/ # File tree endpoints
+│   │   │   └── file-content/  # File reading endpoint
+│   │   └── page.tsx           # Main application UI
+│   ├── components/            # React components
+│   │   ├── ChatUI.tsx         # Chat interface
+│   │   ├── LoginButton.tsx    # Authentication
+│   │   └── RepoSearch.tsx     # Repository search
+│   ├── mastra/                # Mastra configuration
+│   │   ├── agents/            # AI agent definitions
+│   │   ├── tools/             # Custom tool implementations
+│   │   └── mcp/               # MCP client setup
+│   └── lib/                   # Utility functions
+│       ├── github.ts          # GitHub API integration
+│       └── mastraClient.ts    # Mastra client setup
+├── Dockerfile                 # Container configuration
+└── package.json              # Dependencies
+```
 
-### 3. Nosana Integration ⚡
-- Successful deployment on Nosana
-- Resource efficiency
-- Stability and performance
-- Proper containerization
+## 🛠️ Technical Details
 
-### 4. Real-World Impact 🌍
-- Practical use cases
-- Potential for adoption
-- Clear value proposition
-- Demonstration quality
+### How It Works
 
-## 🎁 Prizes
+1. **Authentication**: Users log in via GitHub OAuth, granting the app read access to repositories
+2. **Repository Access**: The app fetches user repositories using the GitHub REST API
+3. **AI Agent**: Mastra orchestrates the AI agent with custom tools for GitHub operations
+4. **Tool Execution**: When users ask questions, the agent intelligently calls tools to fetch repository data
+5. **Response Generation**: GPT-4 processes the data and generates human-friendly responses
 
-**Top 10 submissions will be rewarded:**
-- 🥇 1st Place: $1,000 USDC
-- 🥈 2nd Place: $750 USDC
-- 🥉 3rd Place: $450 USDC
-- 🏅 4th Place: $200 USDC
-- 🏅 5th-10th Place: $100 USDC each
+### Custom Tools Implementation
+
+Each tool is built using Mastra's `createTool` function:
+
+- **Input Schema**: Defines required parameters (Zod validation)
+- **Output Schema**: Structures the returned data
+- **Execute Function**: Handles the actual GitHub API calls
+
+### Security Features
+
+- OAuth tokens are stored server-side only
+- No direct GitHub credentials in frontend
+- Environment variables for sensitive data
+- Rate limiting through GitHub API tokens
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**"Failed to authenticate with GitHub"**
+- Verify your GitHub OAuth credentials in `.env`
+- Ensure the callback URL matches exactly (including http/https)
+- Check that your GitHub OAuth app is properly configured
+
+**"Agent not responding"**
+- Verify your OpenAI API key is valid and has credits
+- Check the Mastra server is running on port 4111
+- Look for errors in the terminal running `pnpm run dev:agent`
+
+**"Cannot find repository"**
+- Make sure you're logged in with GitHub
+- Verify the repository exists and you have access to it
+- Try searching with the exact repository name
+
+**"File contents not loading"**
+- Check your GitHub token has the correct permissions
+- Verify the file path is correct
+- Large files may take longer to load
+
+## 🚀 Future Enhancements
+
+Potential improvements for the project:
+
+- [ ] Add support for private repository permissions
+- [ ] Implement code search within files
+- [ ] Add syntax highlighting for different languages
+- [ ] Enable file editing capabilities
+- [ ] Support for GitHub Issues and Pull Requests
+- [ ] Add repository statistics and insights
+- [ ] Multi-repository comparison features
+- [ ] Export chat conversations
+- [ ] Voice interface integration (currently experimental)
+- [ ] Support for other Git providers (GitLab, Bitbucket)
 
 ## 📚 Learning Resources
 
-For more information, check out the following resources:
+### Documentation
+- [Mastra Documentation](https://mastra.ai/en/docs) - AI agent framework
+- [Mastra Tool Calling](https://mastra.ai/en/docs/agents/tools) - Building custom tools
+- [Next.js Documentation](https://nextjs.org/docs) - React framework
+- [GitHub REST API](https://docs.github.com/en/rest) - GitHub API reference
+- [Nosana Documentation](https://docs.nosana.io) - Deployment platform
+- [Docker Documentation](https://docs.docker.com) - Containerization
 
-- [Nosana Documentation](https://docs.nosana.io)
-- [Mastra Documentation](https://mastra.ai/en/docs) - Learn more about Mastra and its features
-- [CopilotKit Documentation](https://docs.copilotkit.ai) - Explore CopilotKit's capabilities
-- [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
-- [Docker Documentation](https://docs.docker.com)
-- [Nosana CLI](https://github.com/nosana-ci/nosana-cli)
-- [Mastra Agents Overview](https://mastra.ai/en/docs/agents/overview)
-- [Build an AI Stock Agent Guide](https://mastra.ai/en/guides/guide/stock-agent)
-- [Mastra Tool Calling Documentation](https://mastra.ai/en/docs/agents/tools)
+### Tutorials & Guides
+- [Build an AI Stock Agent](https://mastra.ai/en/guides/guide/stock-agent) - Similar pattern to this project
+- [Mastra Agents Overview](https://mastra.ai/en/docs/agents/overview) - Understanding agents
+- [GitHub OAuth Setup](https://docs.github.com/en/apps/oauth-apps) - OAuth configuration
+
+## 🤝 Contributing
+
+Contributions are welcome! If you'd like to improve Repo-Agent:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support & Community
 
 ### Get Help
 - **Discord**: Join [Nosana Discord](https://nosana.com/discord) 
-- **Dedicated Channel**: [Builders Challenge Dev Chat](https://discord.com/channels/236263424676331521/1354391113028337664)
-- **Twitter**: Follow [@nosana_ai](https://x.com/nosana_ai) for live updates
+- **Builders Chat**: [Builders Challenge Dev Chat](https://discord.com/channels/236263424676331521/1354391113028337664)
+- **Twitter**: Follow [@nosana_ai](https://x.com/nosana_ai) for updates
 
-## 🎉 Ready to Build?
+### About Nosana Builders Challenge
 
-1. **Fork** this repository
-2. **Build** your AI agent
-3. **Deploy** to Nosana
-4. **Present** your creation
+This project was created as part of the Nosana Builders Challenge #3: AI Agents 102. The challenge focused on building and deploying intelligent AI agents using the Mastra framework on the Nosana decentralized compute network.
 
-Good luck, builders! We can't wait to see the innovative AI agents you create for the Nosana ecosystem.
+**Challenge Details:**
+- 🏆 [SuperTeam Listing](https://earn.superteam.fun/listing/nosana-builders-challenge-agents-102)
+- 📅 Submission Period: October 10 - October 31, 2025
+- 💰 Total Prize Pool: $3,300+ USDC
+- 🏅 Top 10 winners rewarded
 
-**Happy Building!** 🚀
+**Submission Links:**
+- 📱 [Social Media Post on Bluesky](https://bsky.app/profile/did:plc:3fhiic2kdjbsmxeihyntn6hs/post/3m4je6p4mdf23)
+- 🎥 **Demo Video**: [Coming Soon - Add your demo video link here]
 
-## Stay in the Loop
+## 🙏 Acknowledgments
 
-Want access to exclusive builder perks, early challenges, and Nosana credits?
-Subscribe to our newsletter and never miss an update.
+- **Nosana** - For providing the decentralized compute infrastructure
+- **Mastra** - For the excellent AI agent framework
+- **OpenAI** - For GPT-4 and the Realtime API
+- **GitHub** - For the comprehensive API and OAuth system
+- **Nosana Community** - For support and feedback during development
 
-👉 [ Join the Nosana Builders Newsletter ](https://e86f0b9c.sibforms.com/serve/MUIFALaEjtsXB60SDmm1_DHdt9TOSRCFHOZUSvwK0ANbZDeJH-sBZry2_0YTNi1OjPt_ZNiwr4gGC1DPTji2zdKGJos1QEyVGBzTq_oLalKkeHx3tq2tQtzghyIhYoF4_sFmej1YL1WtnFQyH0y1epowKmDFpDz_EdGKH2cYKTleuTu97viowkIIMqoDgMqTD0uBaZNGwjjsM07T)
+---
 
-Be the first to know about:
-- 🧠 Upcoming Builders Challenges
-- 💸 New reward opportunities
-- ⚙ Product updates and feature drops
-- 🎁 Early-bird credits and partner perks
+**Built with ❤️ for the Nosana Builders Challenge**
 
-Join the Nosana builder community today — and build the future of decentralized AI.
+**Happy Coding!** 🚀
+
+---
+
+### 📊 Project Stats
+
+- **Created**: October 2025
+- **Framework**: Mastra + Next.js 15
+- **AI Model**: OpenAI GPT-4
+- **Deployment**: Nosana Network
+- **Status**: ✅ Fully Functional
 
 
