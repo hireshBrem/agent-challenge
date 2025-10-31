@@ -1,29 +1,10 @@
-# Repo-Agent: AI GitHub Repository Assistant 🤖
-
-![Agent](./assets/NosanaBuildersChallenge03.jpg)
+# Repo-Agent: Chat with your github repo 🤖
 
 An intelligent AI agent that helps you explore, understand, and navigate your GitHub repositories through natural conversation. Built with [Mastra](https://mastra.ai) and deployed on the [Nosana](https://nosana.io) decentralized compute network.
 
 ## 📖 Agent Description & Purpose
 
 **Repo-Agent** is an AI-powered GitHub assistant that makes it easy to interact with your repositories using natural language. Instead of manually browsing through files and folders, simply ask questions about your codebase and get instant, context-aware answers.
-
-### Key Features
-
-- 🔍 **Intelligent Repository Search** - Search and filter through all your GitHub repositories
-- 📂 **Interactive File Browser** - Navigate your repository structure with an intuitive tree view
-- 💬 **AI Chat Interface** - Ask questions about your code, files, and repository structure
-- 🔐 **Secure GitHub OAuth** - Safe authentication with your GitHub account
-- 📝 **File Content Viewer** - Read file contents with syntax highlighting
-- 🎯 **Context-Aware Responses** - The agent understands your current repository and file context
-
-### Use Cases
-
-- Understand unfamiliar codebases quickly
-- Get explanations of specific files or code sections
-- Find dependencies and configuration files
-- Analyze repository structure and organization
-- Get coding best practices and improvement suggestions
 
 ## 🛠️ Tools & APIs Used
 
