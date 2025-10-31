@@ -302,8 +302,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### About Nosana Builders Challenge
 
 **Submission Links:**
-- 📱 [Social Media Post on Bluesky](https://bsky.app/profile/did:plc:3fhiic2kdjbsmxeihyntn6hs/post/3m4je6p4mdf23)
+- 📱 [Social Media Post on Bluesky](https://bsky.app/profile/bremzy05.bsky.social/post/3m4jeus5le22f)
 - 🎥 **Demo Video**: [Coming Soon - Add your demo video link here]
+- 🎥  **Deployment screenshot**: ![Successful Nosana Deployment](assets/deployment.png)
+
 
 ## 🙏 Acknowledgments
 
