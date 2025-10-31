@@ -2,7 +2,6 @@
 
 import { Agent } from "@mastra/core/agent";
 import { OpenAIRealtimeVoice } from "@mastra/voice-openai-realtime";
-import { playAudio, getMicrophoneStream } from "@mastra/node-audio";
 import { openai } from "@ai-sdk/openai";
 
 

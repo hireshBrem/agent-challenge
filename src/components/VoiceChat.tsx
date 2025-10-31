@@ -1,29 +1,13 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import { motion } from "framer-motion"
-import { PhoneIcon, PhoneOff } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState, useRef } from "react"
 import { Orb } from "@/components/ui/orb"
 
-const DEFAULT_AGENT = {
-  name: "VoiceCode AI",
-  description: "Click below to start voice coding",
-}
-
-type ConnectionState = "disconnected" | "connecting" | "connected" | "error"
+// import { speechToSpeechServerExample } from "@/mastra/base";
 
 export function VoiceChat() {
-  const [connectionState, setConnectionState] = useState<ConnectionState>("disconnected")
-  const [inputVolume, setInputVolume] = useState(0)
-  const [outputVolume, setOutputVolume] = useState(0)
-  
-  const wsRef = useRef<WebSocket | null>(null)
-  const audioContextRef = useRef<AudioContext | null>(null)
-  const mediaStreamRef = useRef<MediaStream | null>(null)
-  const processorRef = useRef<ScriptProcessorNode | null>(null)
-
-
+  const [inputVolume] = useState(0)
+  const [outputVolume] = useState(0)
   const [transcript, setTranscript] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -76,9 +60,10 @@ export function VoiceChat() {
     mediaRecorderRef.current?.stop();
   };
 
-
+  
   return (
     <div className="flex flex-col items-center flex-1 justify-center w-full">
+        {/* <button className="bg-blue-500 text-white p-2 rounded-md" onClick={speechToSpeechServerExample}>Start Speech to Speech</button> */}
       {/* Orb Graphic */}
       <div className="relative size-32 mb-6">
         <div className="bg-muted relative h-full w-full rounded-full p-1 shadow-[inset_0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
@@ -151,9 +136,6 @@ export function VoiceChat() {
         </motion.div>
       </Button>
        */}
-      {connectionState === "error" && (
-        <p className="text-red-400 text-xs mt-2">Connection error. Please try again.</p>
-      )}
 
       <div>
       <h1>Mastra Speech-to-Speech Next.js Demo</h1>

@@ -51,6 +51,20 @@ GITHUB_CALLBACK_URL=http://localhost:3000/api/auth/github/callback
 SESSION_SECRET=your_random_secret_key_here
 ```
 
+### GitHub MCP Integration
+
+```bash
+# GitHub Personal Access Token for MCP tools
+# Create a token at https://github.com/settings/tokens
+# Required scopes: repo, read:org, read:user
+# This enables the GitHub Chat Agent to use GitHub MCP tools for:
+# - Searching and browsing repositories
+# - Viewing repository contents, files, and commits
+# - Creating issues and pull requests
+# - Managing repositories
+GITHUB_PERSONAL_ACCESS_TOKEN=your_github_personal_access_token_here
+```
+
 ## Quick Start
 
 1. Copy the template above to a new file called `.env.local`:
@@ -60,7 +74,9 @@ SESSION_SECRET=your_random_secret_key_here
 
 2. Add your OpenAI API key (required for voice features)
 
-3. Adjust other settings as needed for your deployment
+3. Add your GitHub Personal Access Token (required for GitHub MCP tools)
+
+4. Adjust other settings as needed for your deployment
 
 ## Getting OpenAI API Key
 
@@ -69,6 +85,19 @@ SESSION_SECRET=your_random_secret_key_here
 3. Go to API Keys section
 4. Click "Create new secret key"
 5. Copy the key and add it to your `.env.local` file
+
+## Getting GitHub Personal Access Token
+
+1. Visit [GitHub Settings - Personal Access Tokens](https://github.com/settings/tokens)
+2. Click "Generate new token" → "Generate new token (classic)"
+3. Give your token a descriptive name (e.g., "Mastra GitHub MCP")
+4. Select the following scopes:
+   - `repo` (Full control of private repositories)
+   - `read:org` (Read org and team membership)
+   - `read:user` (Read user profile data)
+5. Click "Generate token" at the bottom
+6. Copy the token immediately (you won't see it again!)
+7. Add it to your `.env.local` file as `GITHUB_PERSONAL_ACCESS_TOKEN`
 
 ## Testing Your Configuration
 

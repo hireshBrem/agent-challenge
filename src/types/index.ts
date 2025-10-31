@@ -19,7 +19,9 @@ export interface Repository {
   };
   private: boolean;
   stargazers_count: number;
+  forks_count: number;
   language?: string;
+  updated_at: string;
 }
 
 export interface RepositoryContent {
@@ -29,6 +31,7 @@ export interface RepositoryContent {
   size?: number;
   sha: string;
   download_url?: string;
+  html_url?: string;
   content?: string;
   encoding?: string;
 }

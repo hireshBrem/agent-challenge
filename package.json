@@ -17,6 +17,7 @@
   "dependencies": {
     "@ag-ui/mastra": "0.1.0",
     "@ai-sdk/openai": "^2.0.42",
+    "@clack/prompts": "^0.11.0",
     "@copilotkit/react-core": "1.10.6",
     "@copilotkit/react-textarea": "1.10.6",
     "@copilotkit/react-ui": "1.10.6",
@@ -25,7 +26,7 @@
     "@mastra/client-js": "0.14.1",
     "@mastra/core": "0.19.1",
     "@mastra/libsql": "0.15.0",
-    "@mastra/mcp": "^0.13.4",
+    "@mastra/mcp": "^0.14.1",
     "@mastra/memory": "0.15.4",
     "@mastra/node-audio": "^0.1.7",
     "@mastra/voice-google-gemini-live": "^0.10.17",

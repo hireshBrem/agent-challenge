@@ -1,6 +1,7 @@
-import { MCPServer } from "@mastra/mcp"
+import { MCPClient, MCPServer } from "@mastra/mcp"
 import { realtimeVoiceAgent } from "../agents";
 import { weatherTool } from "../tools";
+import { githubChatAgent } from "../agents";
 
 export const server = new MCPServer({
   name: "My Custom Server",
@@ -11,3 +12,14 @@ export const server = new MCPServer({
   // dataProcessingWorkflow, // this workflow will become tool "run_dataProcessingWorkflow"
   // }
 });
+
+export const githubMcpClient = new MCPClient({
+    id: "github",
+    servers: {
+        github: {
+            // type: "http",
+            url: new URL("https://api.githubcopilot.com/mcp/")
+        }
+    }
+});
+  

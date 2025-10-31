@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mastra } from "@/mastra";
-// import { playAudio, getMicrophoneStream } from "@mastra/node-audio";
+import { playAudio, getMicrophoneStream } from "@mastra/node-audio";
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,16 +28,16 @@ export async function POST(req: NextRequest) {
 
     // const response = await agent.generateVNext(messages);
     // const response = await agent.voice.listen(audio);
-    // const response = await agent.voice.send(audio);
-    // console.log("response from agent: ", response);
+    const response = await agent.voice.send(audio);
+    console.log("response from agent: ", response);
 
     // Initiate the conversation
-    await agent.voice.speak("How can I help you today?");
+    // await agent.voice.speak("How can I help you today?");
 
     // Listen for agent audio responses
-    agent.voice.on("speaker", ({ audio }:any) => {
-        console.log("audio from agent: ", audio);
-    //   playAudio(audio);
+    agent.voice.on("speaker", (data: NodeJS.ReadableStream) => {
+        console.log("audio from agent: ", data);
+      playAudio(data);
     });
     
     // Listen for agent audio responses

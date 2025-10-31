@@ -1,5 +1,10 @@
 import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
+import {
+  fetchUserRepositories,
+  fetchRepositoryContents,
+  fetchFileContent,
+} from '@/lib/github';
 
 interface GeocodingResponse {
   results: {
@@ -104,3 +109,92 @@ function getWeatherCondition(code: number): string {
   };
   return conditions[code] || 'Unknown';
 }
+
+// GitHub Tools
+export const getUserRepositoriesTool = createTool({
+  id: 'get-user-repositories',
+  description: 'Fetch the authenticated user\'s GitHub repositories',
+  inputSchema: z.object({
+    search: z.string().optional().describe('Optional search query to filter repositories by name or description'),
+    accessToken: z.string().describe('GitHub access token for authentication'),
+  }),
+  outputSchema: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    description: z.string().nullable(),
+    url: z.string(),
+    language: z.string().nullable(),
+    stargazers_count: z.number(),
+    forks_count: z.number(),
+    updated_at: z.string(),
+  })),
+  execute: async ({ context }) => {
+    const repos = await fetchUserRepositories(context.accessToken, context.search);
+    return repos.map(repo => ({
+      id: repo.id,
+      name: repo.name,
+      description: repo.description ?? null,
+      url: repo.html_url,
+      language: repo.language ?? null,
+      stargazers_count: repo.stargazers_count,
+      forks_count: repo.forks_count ?? 0,
+      updated_at: repo.updated_at ?? new Date().toISOString(),
+    }));
+  },
+});
+
+export const getRepositoryContentsTool = createTool({
+  id: 'get-repository-contents',
+  description: 'Fetch the contents of a GitHub repository or a specific path within it',
+  inputSchema: z.object({
+    accessToken: z.string().describe('GitHub access token for authentication'),
+    owner: z.string().describe('Repository owner username'),
+    repo: z.string().describe('Repository name'),
+    path: z.string().optional().describe('Path within the repository (default is root)'),
+  }),
+  outputSchema: z.array(z.object({
+    name: z.string(),
+    path: z.string(),
+    type: z.enum(['file', 'dir']),
+    size: z.number(),
+    url: z.string(),
+  })),
+  execute: async ({ context }) => {
+    const contents = await fetchRepositoryContents(
+      context.accessToken,
+      context.owner,
+      context.repo,
+      context.path || ''
+    );
+    return contents.map(item => ({
+      name: item.name,
+      path: item.path,
+      type: item.type as 'file' | 'dir',
+      size: item.size ?? 0,
+      url: item.html_url ?? '',
+    }));
+  },
+});
+
+export const getFileContentTool = createTool({
+  id: 'get-file-content',
+  description: 'Fetch the raw content of a specific file from a GitHub repository',
+  inputSchema: z.object({
+    accessToken: z.string().describe('GitHub access token for authentication'),
+    owner: z.string().describe('Repository owner username'),
+    repo: z.string().describe('Repository name'),
+    path: z.string().describe('Path to the file within the repository'),
+  }),
+  outputSchema: z.object({
+    content: z.string().describe('Raw file content'),
+  }),
+  execute: async ({ context }) => {
+    const content = await fetchFileContent(
+      context.accessToken,
+      context.owner,
+      context.repo,
+      context.path
+    );
+    return { content };
+  },
+});

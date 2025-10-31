@@ -7,6 +7,7 @@ import { LogoutButton } from '@/components/LogoutButton';
 import { LoginButton } from '@/components/LoginButton';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 import { VoiceChat } from '@/components/VoiceChat';
+import { ChatUI } from '@/components/ChatUI';
 
 interface FileTreeItem {
   name: string;
@@ -27,6 +28,8 @@ export default function Home() {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingRepo, setLoadingRepo] = useState(false);
+  const [useVoiceChat, setUseVoiceChat] = useState(false);
+  const [githubToken, setGithubToken] = useState<string | null>(null);
   
 
   // Check authentication
@@ -37,6 +40,7 @@ export default function Home() {
         if (response.ok) {
           const data = await response.json();
           setUser(data.user);
+          setGithubToken(data.token);
         }
       } catch (error) {
         console.error('Auth check error:', error);
@@ -221,10 +225,6 @@ export default function Home() {
         )}
       </div>
     ));
-  };
-
-  const getFileName = (path: string): string => {
-    return path.split('/').pop() || path;
   };
 
   const closeFile = (path: string) => {
@@ -416,9 +416,42 @@ export default function Home() {
           <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-gray-600 group-hover:bg-gray-400 transition-colors" />
         </PanelResizeHandle>
 
-        {/* Right Panel - VoiceCode AI */}
-        <Panel defaultSize={25} minSize={20} maxSize={40} className="bg-black flex flex-col items-center justify-between py-8 px-6">
-          <VoiceChat />
+        {/* Right Panel - AI Assistant */}
+        <Panel defaultSize={25} minSize={20} maxSize={40} className="bg-black flex flex-col">
+          {/* Toggle between Chat and Voice */}
+          <div className="flex border-b border-gray-800">
+            <button
+              onClick={() => setUseVoiceChat(false)}
+              className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                !useVoiceChat
+                  ? 'bg-white text-black'
+                  : 'bg-black text-gray-400 hover:text-white'
+              }`}
+            >
+              Chat
+            </button>
+            <button
+              onClick={() => setUseVoiceChat(true)}
+              className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                useVoiceChat
+                  ? 'bg-white text-black'
+                  : 'bg-black text-gray-400 hover:text-white'
+              }`}
+            >
+              Voice
+            </button>
+          </div>
+          
+          {/* Render appropriate component */}
+          <div className="flex-1 overflow-hidden">
+            {/* {useVoiceChat ? (
+              <div className="h-full flex items-center justify-center p-6">
+                <VoiceChat />
+              </div>
+            ) : ( */}
+              <ChatUI selectedRepo={selectedRepo} selectedFile={selectedTab} userGithubToken={githubToken} />
+            {/* )} */}
+          </div>
         </Panel>
       </PanelGroup>
     </div>

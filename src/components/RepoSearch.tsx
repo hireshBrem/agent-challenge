@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
-import { Repository, RepositoryContent } from '@/types';
+import { useState, useCallback } from 'react';
+import { Repository } from '@/types';
 import RepoContentViewer from './RepoContentViewer';
 
 export function RepoSearch() {
@@ -135,7 +135,7 @@ export function RepoSearch() {
       {repos.length === 0 && search && !loading && (
         <div className="text-center py-12">
           <p className="text-gray-500">
-            No repositories found matching "{search}"
+            No repositories found matching &quot;{search}&quot;
           </p>
         </div>
       )}

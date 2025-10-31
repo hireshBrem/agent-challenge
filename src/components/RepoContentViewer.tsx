@@ -8,11 +8,6 @@ interface RepoContentViewerProps {
   repo: string;
 }
 
-interface FileContent {
-  path: string;
-  content: string;
-}
-
 // Helper function to get file extension
 const getFileExtension = (path: string): string => {
   const ext = path.split('.').pop() || '';
