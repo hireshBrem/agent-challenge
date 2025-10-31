@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "VoiceCode AI",
-  description: "AI voice coding agents",
+  description: "AI voice coding",
 };
 
 export default function RootLayout({
@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${ibmPlexMono.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <CopilotKit runtimeUrl="/api/copilotkit" agent="weatherAgent">
+        <CopilotKit runtimeUrl="/api/copilotkit" agent="realtimeVoiceAgent">
           {children}
         </CopilotKit>
       </body>

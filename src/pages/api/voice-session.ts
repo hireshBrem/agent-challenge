@@ -1,11 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Server as HttpServer } from "http";
 import type { Socket } from "net";
-import { Server as WebSocketServer, WebSocket } from "ws";
+import type { Server as WebSocketServerType, WebSocket as WebSocketType } from "ws";
 import { createRealtimeVoiceAgent } from "@/mastra/agents";
 
+// Lazy load ws only on server-side
+let wsModule: { Server: typeof WebSocketServerType; WebSocket: typeof WebSocketType } | null = null;
+
+const getWS = () => {
+  if (typeof window !== "undefined") {
+    throw new Error("ws can only be used server-side");
+  }
+  if (!wsModule) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    wsModule = require("ws");
+  }
+  return wsModule;
+};
+
 type ExtendedHttpServer = HttpServer & {
-  voiceWss?: WebSocketServer;
+  voiceWss?: WebSocketServerType;
   voiceUpgradeAttached?: boolean;
 };
 
@@ -35,22 +49,22 @@ const toBase64 = (input: ArrayBufferView | Buffer) => {
   return buffer.toString("base64");
 };
 
-const streamAudioToSocket = (socket: WebSocket, stream: NodeJS.ReadableStream) => {
+const streamAudioToSocket = (socket: WebSocketType, stream: NodeJS.ReadableStream, WebSocketClass: typeof WebSocketType) => {
   stream.on("data", (chunk) => {
     const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
-    if (socket.readyState === WebSocket.OPEN) {
+    if (socket.readyState === WebSocketClass.OPEN) {
       socket.send(JSON.stringify({ type: "audio", data: buffer.toString("base64") } satisfies OutgoingMessage));
     }
   });
 
   stream.on("end", () => {
-    if (socket.readyState === WebSocket.OPEN) {
+    if (socket.readyState === WebSocketClass.OPEN) {
       socket.send(JSON.stringify({ type: "audio-end" } satisfies OutgoingMessage));
     }
   });
 
   stream.on("error", (error) => {
-    if (socket.readyState === WebSocket.OPEN) {
+    if (socket.readyState === WebSocketClass.OPEN) {
       socket.send(
         JSON.stringify({ type: "error", message: `Audio stream error: ${String(error)}` } satisfies OutgoingMessage),
       );
@@ -58,13 +72,14 @@ const streamAudioToSocket = (socket: WebSocket, stream: NodeJS.ReadableStream) =
   });
 };
 
-const sendJSON = (socket: WebSocket, payload: OutgoingMessage) => {
-  if (socket.readyState === WebSocket.OPEN) {
+const sendJSON = (socket: WebSocketType, payload: OutgoingMessage, WebSocketClass: typeof WebSocketType) => {
+  if (socket.readyState === WebSocketClass.OPEN) {
     socket.send(JSON.stringify(payload));
   }
 };
 
-const attachConnectionHandlers = (socket: WebSocket) => {
+const attachConnectionHandlers = (socket: WebSocketType) => {
+  const { WebSocket: WebSocketClass } = getWS();
   const agent = createRealtimeVoiceAgent();
   const voice = agent.voice;
 
@@ -72,7 +87,7 @@ const attachConnectionHandlers = (socket: WebSocket) => {
   let closing = false;
 
   const speakerStreamHandler = (stream: NodeJS.ReadableStream) => {
-    streamAudioToSocket(socket, stream);
+    streamAudioToSocket(socket, stream, WebSocketClass);
   };
 
   const speakingHandler = (payload: { audio?: string | Int16Array }) => {
@@ -80,21 +95,21 @@ const attachConnectionHandlers = (socket: WebSocket) => {
     if (!audio) return;
 
     if (typeof audio === "string") {
-      sendJSON(socket, { type: "audio", data: audio });
-      sendJSON(socket, { type: "audio-end" });
+      sendJSON(socket, { type: "audio", data: audio }, WebSocketClass);
+      sendJSON(socket, { type: "audio-end" }, WebSocketClass);
       return;
     }
 
-    sendJSON(socket, { type: "audio", data: toBase64(audio) });
-    sendJSON(socket, { type: "audio-end" });
+    sendJSON(socket, { type: "audio", data: toBase64(audio) }, WebSocketClass);
+    sendJSON(socket, { type: "audio-end" }, WebSocketClass);
   };
 
   const writingHandler = (payload: { text: string; role: string }) => {
-    sendJSON(socket, { type: "text", role: payload.role, text: payload.text });
+    sendJSON(socket, { type: "text", role: payload.role, text: payload.text }, WebSocketClass);
   };
 
   const voiceErrorHandler = (payload: { message: string; code?: string; details?: unknown }) => {
-    sendJSON(socket, { type: "error", message: payload.message });
+    sendJSON(socket, { type: "error", message: payload.message }, WebSocketClass);
   };
 
   const attachVoiceListeners = () => {
@@ -116,7 +131,7 @@ const attachConnectionHandlers = (socket: WebSocket) => {
     await voice.connect();
     attachVoiceListeners();
     connected = true;
-    sendJSON(socket, { type: "ready" });
+    sendJSON(socket, { type: "ready" }, WebSocketClass);
   };
 
   const cleanup = () => {
@@ -135,9 +150,9 @@ const attachConnectionHandlers = (socket: WebSocket) => {
       console.error("Failed to close voice", error);
     }
 
-    if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
+    if (socket.readyState === WebSocketClass.OPEN || socket.readyState === WebSocketClass.CONNECTING) {
       try {
-        sendJSON(socket, { type: "closed" });
+        sendJSON(socket, { type: "closed" }, WebSocketClass);
         socket.close();
       } catch (error) {
         console.error("Failed to close websocket", error);
@@ -173,12 +188,12 @@ const attachConnectionHandlers = (socket: WebSocket) => {
           break;
         }
         default: {
-          sendJSON(socket, { type: "error", message: "Unknown message type" });
+          sendJSON(socket, { type: "error", message: "Unknown message type" }, WebSocketClass);
         }
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      sendJSON(socket, { type: "error", message });
+      sendJSON(socket, { type: "error", message }, WebSocketClass);
     }
   });
 
@@ -193,31 +208,64 @@ export const config = {
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { Server: WebSocketServer } = getWS();
+  
+  // Ensure we have access to the HTTP server
+  if (!res.socket?.server) {
+    console.error("No server available for WebSocket upgrade");
+    return res.status(500).json({ error: "Server not available" });
+  }
+
   const server = res.socket.server as ExtendedHttpServer;
 
+  // Initialize WebSocket server if not already done
   if (!server.voiceWss) {
     const wss = new WebSocketServer({ noServer: true });
     server.voiceWss = wss;
 
-    if (!server.voiceUpgradeAttached) {
-      server.on("upgrade", (request, socket: ExtendedSocket, head) => {
-        if (request.url !== "/api/voice-session") {
-          return;
-        }
-
-        wss.handleUpgrade(request, socket, head, (ws) => {
-          wss.emit("connection", ws, request);
-        });
-      });
-
-      server.voiceUpgradeAttached = true;
-    }
-
+    // Set up connection handler
     wss.on("connection", (socket) => {
+      console.log("WebSocket connection established");
       attachConnectionHandlers(socket);
+    });
+
+    wss.on("error", (error) => {
+      console.error("WebSocket server error:", error);
     });
   }
 
-  res.status(200).end();
+  // Attach upgrade handler if not already attached
+  if (!server.voiceUpgradeAttached) {
+    server.on("upgrade", (request, socket: ExtendedSocket, head) => {
+      // Simple path matching - check if URL contains /api/voice-session
+      const requestUrl = request.url || "";
+      if (!requestUrl.includes("/api/voice-session")) {
+        return;
+      }
+
+      console.log("WebSocket upgrade request received for:", requestUrl);
+
+      if (!server.voiceWss) {
+        console.error("WebSocket server not initialized");
+        socket.destroy();
+        return;
+      }
+
+      try {
+        server.voiceWss.handleUpgrade(request, socket, head, (ws) => {
+          server.voiceWss!.emit("connection", ws, request);
+        });
+      } catch (error) {
+        console.error("Error handling WebSocket upgrade:", error);
+        socket.destroy();
+      }
+    });
+
+    server.voiceUpgradeAttached = true;
+    console.log("WebSocket upgrade handler attached");
+  }
+
+  // For regular HTTP requests, return success
+  res.status(200).json({ status: "ok", websocketReady: true });
 }
 

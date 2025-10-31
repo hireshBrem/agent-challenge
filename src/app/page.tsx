@@ -1,15 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mic, HelpCircle, Copy, ChevronRight, Folder, File, Search, Loader2Icon, PhoneIcon, PhoneOffIcon } from 'lucide-react';
+import { Copy, ChevronRight, Folder, File, Search } from 'lucide-react';
 import { Repository, RepositoryContent, GitHubUser } from '@/types';
-import { useConversation } from '@elevenlabs/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Orb } from '@/components/ui/orb';
-import { ShimmeringText } from '@/components/ui/shimmering-text';
 import { LogoutButton } from '@/components/LogoutButton';
+import { LoginButton } from '@/components/LoginButton';
+import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
+import { VoiceChat } from '@/components/VoiceChat';
 
 interface FileTreeItem {
   name: string;
@@ -31,25 +28,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [loadingRepo, setLoadingRepo] = useState(false);
   
-  // Voice chat state
-  const [agentState, setAgentState] = useState<'disconnected' | 'connecting' | 'connected' | 'disconnecting' | null>('disconnected');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  
-  const DEFAULT_AGENT = {
-    agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!,
-    name: 'VoiceCode AI',
-    description: 'Click below to start voice coding',
-  };
-
-  const conversation = useConversation({
-    onConnect: () => console.log('Connected'),
-    onDisconnect: () => console.log('Disconnected'),
-    onMessage: (message) => console.log('Message:', message),
-    onError: (error) => {
-      console.error('Error:', error);
-      setAgentState('disconnected');
-    },
-  });
 
   // Check authentication
   useEffect(() => {
@@ -262,48 +240,6 @@ export default function Home() {
     return file?.content || '';
   };
 
-  // Voice chat functions
-  const startConversation = useCallback(async () => {
-    try {
-      setErrorMessage(null);
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      await conversation.startSession({
-        agentId: DEFAULT_AGENT.agentId,
-        connectionType: 'webrtc',
-        onStatusChange: (status) => setAgentState(status.status),
-      });
-    } catch (error) {
-      console.error('Error starting conversation:', error);
-      setAgentState('disconnected');
-      if (error instanceof DOMException && error.name === 'NotAllowedError') {
-        setErrorMessage('Please enable microphone permissions in your browser.');
-      }
-    }
-  }, [conversation]);
-
-  const handleCall = useCallback(() => {
-    if (agentState === 'disconnected' || agentState === null) {
-      setAgentState('connecting');
-      startConversation();
-    } else if (agentState === 'connected') {
-      conversation.endSession();
-      setAgentState('disconnected');
-    }
-  }, [agentState, conversation, startConversation]);
-
-  const isCallActive = agentState === 'connected';
-  const isTransitioning = agentState === 'connecting' || agentState === 'disconnecting';
-
-  const getInputVolume = useCallback(() => {
-    const rawValue = conversation.getInputVolume?.() ?? 0;
-    return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5);
-  }, [conversation]);
-
-  const getOutputVolume = useCallback(() => {
-    const rawValue = conversation.getOutputVolume?.() ?? 0;
-    return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5);
-  }, [conversation]);
-
   return (
     <div className="flex flex-col h-screen w-full bg-black text-white font-mono">
       {/* Header with Search */}
@@ -327,7 +263,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          {user && (
+          {user ? (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-sm">
                 <img src={user.avatar_url} alt={user.login} className="w-6 h-6 rounded-full" />
@@ -335,6 +271,8 @@ export default function Home() {
               </div>
               <LogoutButton />
             </div>
+          ) : (
+            <LoginButton />
           )}
         </div>
 
@@ -386,9 +324,9 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
+      <PanelGroup direction="horizontal" className="flex-1 overflow-hidden">
         {/* Left Panel - Project Files */}
-        <div className="w-64 border-r border-gray-800 bg-black flex flex-col">
+        <Panel defaultSize={25} minSize={15} maxSize={40} className="bg-black flex flex-col">
           <div className="px-4 py-3 border-b border-gray-800">
             <h2 className="text-sm font-bold">Project Files</h2>
           </div>
@@ -405,10 +343,14 @@ export default function Home() {
               <div className="text-sm text-gray-400 py-4">Select a repository to view files</div>
             )}
           </div>
-        </div>
+        </Panel>
+
+        <PanelResizeHandle className="w-2 bg-gray-800 hover:bg-gray-600 transition-colors cursor-col-resize relative group">
+          <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-gray-600 group-hover:bg-gray-400 transition-colors" />
+        </PanelResizeHandle>
 
         {/* Middle Panel - Code Viewer */}
-        <div className="flex-1 border-r border-gray-800 bg-black flex flex-col">
+        <Panel defaultSize={50} minSize={30} className="bg-black flex flex-col">
             {/* Show only if there are open files */}
             {openFiles.length > 0 && (  
             <div className="px-4 py-2 border-b border-gray-800">
@@ -468,122 +410,17 @@ export default function Home() {
               </div>
             )}
           </div>
-        </div>
+        </Panel>
+
+        <PanelResizeHandle className="w-2 bg-gray-800 hover:bg-gray-600 transition-colors cursor-col-resize relative group">
+          <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-gray-600 group-hover:bg-gray-400 transition-colors" />
+        </PanelResizeHandle>
 
         {/* Right Panel - VoiceCode AI */}
-        <div className="w-96 bg-black flex flex-col items-center justify-between py-8 px-6">
-          {/* Top Section - Voice Chat Interface */}
-          <div className="flex flex-col items-center flex-1 justify-center w-full">
-            {/* Orb Graphic */}
-            <div className="relative size-32 mb-6">
-              <div className="bg-muted relative h-full w-full rounded-full p-1 shadow-[inset_0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
-                <div className="bg-background h-full w-full overflow-hidden rounded-full shadow-[inset_0_0_12px_rgba(0,0,0,0.05)] dark:shadow-[inset_0_0_12px_rgba(0,0,0,0.3)]">
-                  <Orb
-                    className="h-full w-full"
-                    volumeMode="manual"
-                    getInputVolume={getInputVolume}
-                    getOutputVolume={getOutputVolume}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Title */}
-            <div className="flex flex-col items-center gap-2 mb-6">
-              <h2 className="text-xl font-bold">{DEFAULT_AGENT.name}</h2>
-              <AnimatePresence mode="wait">
-                {errorMessage ? (
-                  <motion.p
-                    key="error"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="text-red-400 text-center text-sm"
-                  >
-                    {errorMessage}
-                  </motion.p>
-                ) : agentState === 'disconnected' || agentState === null ? (
-                  <motion.p
-                    key="disconnected"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="text-gray-400 text-sm"
-                  >
-                    {DEFAULT_AGENT.description}
-                  </motion.p>
-                ) : (
-                  <motion.div
-                    key="status"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="flex items-center gap-2"
-                  >
-                    <div
-                      className={cn(
-                        'h-2 w-2 rounded-full transition-all duration-300',
-                        agentState === 'connected' && 'bg-green-500',
-                        isTransitioning && 'bg-blue-500 animate-pulse'
-                      )}
-                    />
-                    <span className="text-sm capitalize">
-                      {isTransitioning ? (
-                        <ShimmeringText text={agentState} />
-                      ) : (
-                        <span className="text-green-600">Connected</span>
-                      )}
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Voice Input Button */}
-            <Button
-              onClick={handleCall}
-              disabled={isTransitioning}
-              size="icon"
-              variant={isCallActive ? 'secondary' : 'default'}
-              className="h-15 w-15 cursor-pointer rounded-full border-2 border-white hover:bg-gray-900 transition-colors"
-            >
-              <AnimatePresence mode="wait">
-                {isTransitioning ? (
-                  <motion.div
-                    key="loading"
-                    initial={{ opacity: 0, rotate: 0 }}
-                    animate={{ opacity: 1, rotate: 360 }}
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      rotate: { duration: 1, repeat: Infinity, ease: 'linear' },
-                    }}
-                  >
-                    <Loader2Icon className="h-8 w-8" />
-                  </motion.div>
-                ) : isCallActive ? (
-                  <motion.div
-                    key="end"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.5 }}
-                  >
-                    <PhoneOffIcon className="h-8 w-8" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="start"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.5 }}
-                  >
-                    <PhoneIcon className="h-8 w-8" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </Button>
-          </div>
-        </div>
-      </div>
+        <Panel defaultSize={25} minSize={20} maxSize={40} className="bg-black flex flex-col items-center justify-between py-8 px-6">
+          <VoiceChat />
+        </Panel>
+      </PanelGroup>
     </div>
   );
 }
