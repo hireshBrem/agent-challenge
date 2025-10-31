@@ -302,85 +302,6 @@ repo-agent/
 └── package.json              # Dependencies
 ```
 
-## 🛠️ Technical Details
-
-### How It Works
-
-1. **Authentication**: Users log in via GitHub OAuth, granting the app read access to repositories
-2. **Repository Access**: The app fetches user repositories using the GitHub REST API
-3. **AI Agent**: Mastra orchestrates the AI agent with custom tools for GitHub operations
-4. **Tool Execution**: When users ask questions, the agent intelligently calls tools to fetch repository data
-5. **Response Generation**: GPT-4 processes the data and generates human-friendly responses
-
-### Custom Tools Implementation
-
-Each tool is built using Mastra's `createTool` function:
-
-- **Input Schema**: Defines required parameters (Zod validation)
-- **Output Schema**: Structures the returned data
-- **Execute Function**: Handles the actual GitHub API calls
-
-### Security Features
-
-- OAuth tokens are stored server-side only
-- No direct GitHub credentials in frontend
-- Environment variables for sensitive data
-- Rate limiting through GitHub API tokens
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-**"Failed to authenticate with GitHub"**
-- Verify your GitHub OAuth credentials in `.env`
-- Ensure the callback URL matches exactly (including http/https)
-- Check that your GitHub OAuth app is properly configured
-
-**"Agent not responding"**
-- Verify your OpenAI API key is valid and has credits
-- Check the Mastra server is running on port 4111
-- Look for errors in the terminal running `pnpm run dev:agent`
-
-**"Cannot find repository"**
-- Make sure you're logged in with GitHub
-- Verify the repository exists and you have access to it
-- Try searching with the exact repository name
-
-**"File contents not loading"**
-- Check your GitHub token has the correct permissions
-- Verify the file path is correct
-- Large files may take longer to load
-
-## 🚀 Future Enhancements
-
-Potential improvements for the project:
-
-- [ ] Add support for private repository permissions
-- [ ] Implement code search within files
-- [ ] Add syntax highlighting for different languages
-- [ ] Enable file editing capabilities
-- [ ] Support for GitHub Issues and Pull Requests
-- [ ] Add repository statistics and insights
-- [ ] Multi-repository comparison features
-- [ ] Export chat conversations
-- [ ] Voice interface integration (currently experimental)
-- [ ] Support for other Git providers (GitLab, Bitbucket)
-
-## 📚 Learning Resources
-
-### Documentation
-- [Mastra Documentation](https://mastra.ai/en/docs) - AI agent framework
-- [Mastra Tool Calling](https://mastra.ai/en/docs/agents/tools) - Building custom tools
-- [Next.js Documentation](https://nextjs.org/docs) - React framework
-- [GitHub REST API](https://docs.github.com/en/rest) - GitHub API reference
-- [Nosana Documentation](https://docs.nosana.io) - Deployment platform
-- [Docker Documentation](https://docs.docker.com) - Containerization
-
-### Tutorials & Guides
-- [Build an AI Stock Agent](https://mastra.ai/en/guides/guide/stock-agent) - Similar pattern to this project
-- [Mastra Agents Overview](https://mastra.ai/en/docs/agents/overview) - Understanding agents
-- [GitHub OAuth Setup](https://docs.github.com/en/apps/oauth-apps) - OAuth configuration
-
 ## 🤝 Contributing
 
 Contributions are welcome! If you'd like to improve Repo-Agent:
@@ -397,20 +318,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support & Community
 
-### Get Help
-- **Discord**: Join [Nosana Discord](https://nosana.com/discord) 
-- **Builders Chat**: [Builders Challenge Dev Chat](https://discord.com/channels/236263424676331521/1354391113028337664)
-- **Twitter**: Follow [@nosana_ai](https://x.com/nosana_ai) for updates
-
 ### About Nosana Builders Challenge
-
-This project was created as part of the Nosana Builders Challenge #3: AI Agents 102. The challenge focused on building and deploying intelligent AI agents using the Mastra framework on the Nosana decentralized compute network.
-
-**Challenge Details:**
-- 🏆 [SuperTeam Listing](https://earn.superteam.fun/listing/nosana-builders-challenge-agents-102)
-- 📅 Submission Period: October 10 - October 31, 2025
-- 💰 Total Prize Pool: $3,300+ USDC
-- 🏅 Top 10 winners rewarded
 
 **Submission Links:**
 - 📱 [Social Media Post on Bluesky](https://bsky.app/profile/did:plc:3fhiic2kdjbsmxeihyntn6hs/post/3m4je6p4mdf23)
@@ -429,15 +337,4 @@ This project was created as part of the Nosana Builders Challenge #3: AI Agents 
 **Built with ❤️ for the Nosana Builders Challenge**
 
 **Happy Coding!** 🚀
-
----
-
-### 📊 Project Stats
-
-- **Created**: October 2025
-- **Framework**: Mastra + Next.js 15
-- **AI Model**: OpenAI GPT-4
-- **Deployment**: Nosana Network
-- **Status**: ✅ Fully Functional
-
 
